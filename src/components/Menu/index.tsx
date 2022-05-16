@@ -1,10 +1,18 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Container } from "./styles";
 
 export function Menu() {
 	return (
 		<Container>
-			<h1>Image segmentation</h1>
+			<Link href="/">
+				<div>
+					<figure>
+						<Image src="/icon.svg" alt="Icon showing a graph" layout="fill" />
+					</figure>
+					<h1>Image segmentation</h1>
+				</div>
+			</Link>
 
 			<ul>
 				<Link href="/">
