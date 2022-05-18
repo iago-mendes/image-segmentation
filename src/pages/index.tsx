@@ -43,9 +43,11 @@ const Home: NextPage = () => {
 					<Dropzone onFileUploaded={handleUploadImage} />
 				) : (
 					<>
-						<figure className="uploaded">
-							<img src={uploadedImageLink} alt="Uploaded image" />
-						</figure>
+						<img
+							src={uploadedImageLink}
+							alt="Uploaded image"
+							className="uploaded"
+						/>
 					</>
 				)}
 			</main>
