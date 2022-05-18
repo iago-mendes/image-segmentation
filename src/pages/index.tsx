@@ -1,13 +1,54 @@
 import type {NextPage} from 'next'
+import {useState} from 'react'
+import {BsArrowCounterclockwise} from 'react-icons/bs'
 
 import {Dropzone} from '../components/Dropzone'
+import {LoadingSpinner} from '../components/LoadingSpinner'
 import {Container} from '../styles/pages/index'
 
 const Home: NextPage = () => {
+	const [uploadedImage, setUploadedImage] = useState<File | null>(null)
+	const [isLoading, setIsLoading] = useState(false)
+
+	const uploadedImageLink = uploadedImage
+		? URL.createObjectURL(uploadedImage)
+		: ''
+
+	function handleUploadImage(file: File) {
+		setIsLoading(true)
+
+		setUploadedImage(file)
+
+		setIsLoading(false)
+	}
+
+	function handleReset() {
+		setUploadedImage(null)
+	}
+
 	return (
 		<Container>
-			<h1>Home</h1>
-			<Dropzone onFileUploaded={() => {}} />
+			<header>
+				<div className="actions">
+					<button onClick={handleReset}>
+						<BsArrowCounterclockwise />
+						Reset
+					</button>
+				</div>
+			</header>
+			<main>
+				{isLoading ? (
+					<LoadingSpinner />
+				) : !uploadedImage ? (
+					<Dropzone onFileUploaded={handleUploadImage} />
+				) : (
+					<>
+						<figure className="uploaded">
+							<img src={uploadedImageLink} alt="Uploaded image" />
+						</figure>
+					</>
+				)}
+			</main>
 		</Container>
 	)
 }
