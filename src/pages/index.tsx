@@ -10,6 +10,7 @@ import {NetworkFlow} from '../utils/classes/networkFlow'
 const Home: NextPage = () => {
 	const [uploadedImage, setUploadedImage] = useState<File | null>(null)
 	const [isLoading, setIsLoading] = useState(false)
+	const [networkFlow, setNetworkFlow] = useState<NetworkFlow | null>(null)
 
 	function handleUploadImage(file: File) {
 		setIsLoading(true)
@@ -39,6 +40,7 @@ const Home: NextPage = () => {
 
 		const img = new Image()
 		const imageUrl = URL.createObjectURL(uploadedImage)
+		img.src = imageUrl
 
 		img.onload = function () {
 			canvas.width = img.width
@@ -48,12 +50,10 @@ const Home: NextPage = () => {
 			const imageData = ctx.getImageData(0, 0, img.width, img.height)
 			console.log('<< imageData >>', imageData)
 			const networkFlow = new NetworkFlow(imageData)
-			console.log('<< networkFlow >>', networkFlow)
+			setNetworkFlow(networkFlow)
 
 			setIsLoading(false)
 		}
-
-		img.src = imageUrl
 	}
 
 	return (
@@ -68,15 +68,9 @@ const Home: NextPage = () => {
 				</div>
 			</header>
 			<main>
-				{isLoading ? (
-					<LoadingSpinner />
-				) : !uploadedImage ? (
-					<Dropzone onFileUploaded={handleUploadImage} />
-				) : (
-					<>
-						<canvas id="uploaded"></canvas>
-					</>
-				)}
+				{isLoading && <LoadingSpinner />}
+				{!uploadedImage && <Dropzone onFileUploaded={handleUploadImage} />}
+				<canvas id="uploaded"></canvas>
 			</main>
 		</Container>
 	)
