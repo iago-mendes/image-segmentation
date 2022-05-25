@@ -22,7 +22,7 @@ export class NetworkFlow {
 					row,
 					column
 				)
-				console.log('<< pixelNode >>', JSON.stringify(pixelNode))
+				// console.log('<< pixelNode >>', JSON.stringify(pixelNode))
 			}
 		}
 	}

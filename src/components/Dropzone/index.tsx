@@ -21,8 +21,8 @@ export function Dropzone({onFileUploaded, name, id}: Props) {
 	)
 
 	const {getRootProps, getInputProps} = useDropzone({
-		onDrop,
-		accept: {multiple: ['image/*']}
+		onDrop
+		// accept: {multiple: ['image/*']}
 	})
 
 	return (

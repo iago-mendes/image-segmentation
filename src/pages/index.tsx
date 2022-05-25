@@ -5,6 +5,7 @@ import {BsArrowCounterclockwise} from 'react-icons/bs'
 import {Dropzone} from '../components/Dropzone'
 import {LoadingSpinner} from '../components/LoadingSpinner'
 import {Container} from '../styles/pages/index'
+import {NetworkFlow} from '../utils/classes/networkFlow'
 
 const Home: NextPage = () => {
 	const [uploadedImage, setUploadedImage] = useState<File | null>(null)
@@ -46,6 +47,8 @@ const Home: NextPage = () => {
 			ctx.drawImage(img, 0, 0)
 			const imageData = ctx.getImageData(0, 0, img.width, img.height)
 			console.log('<< imageData >>', imageData)
+			const networkFlow = new NetworkFlow(imageData)
+			console.log('<< networkFlow >>', networkFlow)
 
 			setIsLoading(false)
 		}
