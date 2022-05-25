@@ -9,8 +9,7 @@ export const Container = styled.div`
 
 		> canvas#uploaded {
 			width: 300px;
-			height: 300px;
-			background-color: red;
+			/* background-color: red; */
 		}
 	}
 `

@@ -1,5 +1,5 @@
 import type {NextPage} from 'next'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {BsArrowCounterclockwise} from 'react-icons/bs'
 
 import {Dropzone} from '../components/Dropzone'
@@ -11,6 +11,10 @@ const Home: NextPage = () => {
 	const [uploadedImage, setUploadedImage] = useState<File | null>(null)
 	const [isLoading, setIsLoading] = useState(false)
 	const [networkFlow, setNetworkFlow] = useState<NetworkFlow | null>(null)
+
+	useEffect(() => {
+		processUploadedImage(uploadedImage)
+	}, [uploadedImage])
 
 	function handleUploadImage(file: File) {
 		setIsLoading(true)
@@ -24,19 +28,19 @@ const Home: NextPage = () => {
 		setUploadedImage(null)
 	}
 
-	function testBuffer() {
-		if (!uploadedImage) return
-
+	function processUploadedImage(uploadedImage: File | null) {
 		const canvas = document.querySelector('#uploaded') as HTMLCanvasElement
 		if (!canvas) return
 
 		const ctx = canvas.getContext('2d')
 		if (!ctx) return
 
-		setIsLoading(true)
+		if (!uploadedImage) {
+			ctx.clearRect(0, 0, canvas.width, canvas.height)
+			return
+		}
 
-		canvas.width = 500
-		canvas.height = 500
+		setIsLoading(true)
 
 		const img = new Image()
 		const imageUrl = URL.createObjectURL(uploadedImage)
@@ -48,7 +52,6 @@ const Home: NextPage = () => {
 
 			ctx.drawImage(img, 0, 0)
 			const imageData = ctx.getImageData(0, 0, img.width, img.height)
-			console.log('<< imageData >>', imageData)
 			const networkFlow = new NetworkFlow(imageData)
 			setNetworkFlow(networkFlow)
 
@@ -64,7 +67,6 @@ const Home: NextPage = () => {
 						<BsArrowCounterclockwise />
 						Reset
 					</button>
-					<button onClick={testBuffer}>Test buffer</button>
 				</div>
 			</header>
 			<main>
