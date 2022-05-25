@@ -10,10 +10,6 @@ const Home: NextPage = () => {
 	const [uploadedImage, setUploadedImage] = useState<File | null>(null)
 	const [isLoading, setIsLoading] = useState(false)
 
-	const uploadedImageLink = uploadedImage
-		? URL.createObjectURL(uploadedImage)
-		: ''
-
 	function handleUploadImage(file: File) {
 		setIsLoading(true)
 
@@ -26,6 +22,37 @@ const Home: NextPage = () => {
 		setUploadedImage(null)
 	}
 
+	function testBuffer() {
+		if (!uploadedImage) return
+
+		const canvas = document.querySelector('#uploaded') as HTMLCanvasElement
+		if (!canvas) return
+
+		const ctx = canvas.getContext('2d')
+		if (!ctx) return
+
+		setIsLoading(true)
+
+		canvas.width = 500
+		canvas.height = 500
+
+		const img = new Image()
+		const imageUrl = URL.createObjectURL(uploadedImage)
+
+		img.onload = function () {
+			canvas.width = img.width
+			canvas.height = img.height
+
+			ctx.drawImage(img, 0, 0)
+			const imageData = ctx.getImageData(0, 0, img.width, img.height)
+			console.log('<< imageData >>', imageData)
+
+			setIsLoading(false)
+		}
+
+		img.src = imageUrl
+	}
+
 	return (
 		<Container>
 			<header>
@@ -34,6 +61,7 @@ const Home: NextPage = () => {
 						<BsArrowCounterclockwise />
 						Reset
 					</button>
+					<button onClick={testBuffer}>Test buffer</button>
 				</div>
 			</header>
 			<main>
@@ -43,11 +71,7 @@ const Home: NextPage = () => {
 					<Dropzone onFileUploaded={handleUploadImage} />
 				) : (
 					<>
-						<img
-							src={uploadedImageLink}
-							alt="Uploaded image"
-							className="uploaded"
-						/>
+						<canvas id="uploaded"></canvas>
 					</>
 				)}
 			</main>

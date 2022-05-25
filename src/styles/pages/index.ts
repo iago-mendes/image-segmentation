@@ -7,7 +7,7 @@ export const Container = styled.div`
 
 		margin: 0 auto;
 
-		> img.uploaded {
+		> canvas#uploaded {
 			width: 300px;
 		}
 	}
