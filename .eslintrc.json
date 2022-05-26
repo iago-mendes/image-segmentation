@@ -37,6 +37,7 @@
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		"@typescript-eslint/no-explicit-any": "off",
 		"@next/next/google-font-display": "off",
-		"@next/next/no-img-element": "off"
+		"@next/next/no-img-element": "off",
+		"no-inner-declarations": "off"
 	}
 }
