@@ -97,7 +97,10 @@ const Home: NextPage = () => {
 								className="selected-color"
 								style={{backgroundColor: color}}
 							>
-								<button onClick={() => handleRemoveSelectedColor(color)}>
+								<button
+									title="Remove color"
+									onClick={() => handleRemoveSelectedColor(color)}
+								>
 									<FiX />
 								</button>
 							</div>
