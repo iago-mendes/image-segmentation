@@ -1,7 +1,7 @@
 import type {NextPage} from 'next'
 import {useEffect, useState} from 'react'
 import {BsArrowCounterclockwise} from 'react-icons/bs'
-import {FiPlus, FiX} from 'react-icons/fi'
+import {FiPlus, FiX, FiPlay} from 'react-icons/fi'
 
 import {Dropzone} from '../components/Dropzone'
 import {LoadingSpinner} from '../components/LoadingSpinner'
@@ -88,6 +88,13 @@ const Home: NextPage = () => {
 						<BsArrowCounterclockwise />
 						Reset
 					</button>
+
+					{isReady && (
+						<button>
+							<FiPlay />
+							Run
+						</button>
+					)}
 				</div>
 				{isReady && (
 					<div className="selected-colors">

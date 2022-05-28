@@ -9,7 +9,36 @@ export const Container = styled.div`
 		margin-top: 1.5rem;
 
 		display: flex;
+		align-items: center;
 		justify-content: space-between;
+
+		button {
+			transition: filter 0.2s, transform 0.2s;
+
+			:hover {
+				filter: brightness(0.75);
+				transform: scale(0.95);
+			}
+		}
+
+		> .actions {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+
+			> button {
+				display: flex;
+				align-items: center;
+				gap: 0.25rem;
+
+				padding: 0.25rem 0.5rem;
+				border: none;
+
+				background-color: ${p => p.theme.text};
+				color: ${p => p.theme.background};
+				border-radius: 0.25rem;
+			}
+		}
 
 		> .selected-colors {
 			display: flex;
