@@ -1,6 +1,7 @@
 import type {NextPage} from 'next'
 import {useEffect, useState} from 'react'
 import {BsArrowCounterclockwise} from 'react-icons/bs'
+import {FiPlus, FiX} from 'react-icons/fi'
 
 import {Dropzone} from '../components/Dropzone'
 import {LoadingSpinner} from '../components/LoadingSpinner'
@@ -11,6 +12,11 @@ const Home: NextPage = () => {
 	const [uploadedImage, setUploadedImage] = useState<File | null>(null)
 	const [isLoading, setIsLoading] = useState(false)
 	const [networkFlow, setNetworkFlow] = useState<NetworkFlow | null>(null)
+
+	const [selectedColors, setSelectedColors] = useState<string[]>(['#ffffff'])
+	const [tmpSelectedColor, setTmpSelectedColor] = useState('#ffffff')
+
+	const isReady = networkFlow != null && !isLoading
 
 	useEffect(() => {
 		processUploadedImage(uploadedImage)
@@ -26,6 +32,8 @@ const Home: NextPage = () => {
 
 	function handleReset() {
 		setUploadedImage(null)
+		setNetworkFlow(null)
+		setSelectedColors(['#ffffff'])
 	}
 
 	function processUploadedImage(uploadedImage: File | null) {
@@ -59,6 +67,19 @@ const Home: NextPage = () => {
 		}
 	}
 
+	function handleAddSelectedColor() {
+		setSelectedColors(previous => {
+			if (previous.includes(tmpSelectedColor)) return previous
+			else return [...previous, tmpSelectedColor]
+		})
+	}
+
+	function handleRemoveSelectedColor(color: string) {
+		setSelectedColors(previous =>
+			previous.filter(selectedColor => selectedColor !== color)
+		)
+	}
+
 	return (
 		<Container>
 			<header>
@@ -68,7 +89,33 @@ const Home: NextPage = () => {
 						Reset
 					</button>
 				</div>
+				{isReady && (
+					<div className="selected-colors">
+						{selectedColors.map(color => (
+							<div
+								key={color}
+								className="selected-color"
+								style={{backgroundColor: color}}
+							>
+								<button onClick={() => handleRemoveSelectedColor(color)}>
+									<FiX />
+								</button>
+							</div>
+						))}
+						<div className="new-color">
+							<input
+								type="color"
+								value={tmpSelectedColor}
+								onChange={event => setTmpSelectedColor(event.target.value)}
+							/>
+							<button title="Add color" onClick={handleAddSelectedColor}>
+								<FiPlus />
+							</button>
+						</div>
+					</div>
+				)}
 			</header>
+
 			<main>
 				{isLoading && <LoadingSpinner />}
 				{!uploadedImage && <Dropzone onFileUploaded={handleUploadImage} />}
