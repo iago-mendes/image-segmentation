@@ -1,6 +1,8 @@
 import {Edge} from './edge'
 import {PixelNode} from './pixelNode'
 import {getSeparationPenalty} from '../getSeparationPenalty'
+import {getBackgroundLikehood} from '../getBackgroundLikehood'
+import {getForegroundLikehood} from '../getForegroundLikehood'
 
 const sourceNode: PixelNode = new PixelNode(0, 0, 0, 0, 0, 0)
 const sinkNode: PixelNode = new PixelNode(0, 0, 0, 0, 0, 0)
@@ -41,13 +43,28 @@ export class NetworkFlow {
 
 			this.nodes.push(rowNodes)
 		}
-
-		this.computeEdges()
 	}
 
-	computeEdges() {
+	computeEdges(backgroundColors: string[]) {
 		sourceNode.edges.length = 0 // clear previous source edges
 		sinkNode.edges.length = 0 // clear previous sink edges
+
+		// compute foreground and background likehoods
+		for (let row = 0; row < this.height; row++) {
+			for (let column = 0; column < this.width; column++) {
+				const pixelNode = this.nodes[row][column]
+
+				pixelNode.backgroundLikehood = getBackgroundLikehood(
+					pixelNode,
+					backgroundColors
+				)
+
+				pixelNode.foregroundLikehood = getForegroundLikehood(
+					pixelNode,
+					backgroundColors
+				)
+			}
+		}
 
 		// set up edges
 		for (let row = 0; row < this.height; row++) {

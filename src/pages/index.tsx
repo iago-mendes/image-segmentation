@@ -13,7 +13,7 @@ const Home: NextPage = () => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [networkFlow, setNetworkFlow] = useState<NetworkFlow | null>(null)
 
-	const [selectedColors, setSelectedColors] = useState<string[]>(['#ffffff'])
+	const [selectedColors, setSelectedColors] = useState<string[]>([])
 	const [tmpSelectedColor, setTmpSelectedColor] = useState('#ffffff')
 
 	const isReady = networkFlow != null && !isLoading
@@ -33,7 +33,7 @@ const Home: NextPage = () => {
 	function handleReset() {
 		setUploadedImage(null)
 		setNetworkFlow(null)
-		setSelectedColors(['#ffffff'])
+		setSelectedColors([])
 	}
 
 	function processUploadedImage(uploadedImage: File | null) {
@@ -80,6 +80,15 @@ const Home: NextPage = () => {
 		)
 	}
 
+	function handleRun() {
+		if (selectedColors.length < 1)
+			return alert('Select at least one background color.')
+
+		if (!networkFlow) return
+
+		networkFlow.computeEdges(selectedColors)
+	}
+
 	return (
 		<Container>
 			<header>
@@ -90,12 +99,13 @@ const Home: NextPage = () => {
 					</button>
 
 					{isReady && (
-						<button>
+						<button onClick={handleRun}>
 							<FiPlay />
 							Run
 						</button>
 					)}
 				</div>
+
 				{isReady && (
 					<div className="selected-colors">
 						{selectedColors.map(color => (
