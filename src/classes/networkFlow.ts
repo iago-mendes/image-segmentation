@@ -205,10 +205,12 @@ export class NetworkFlow {
 
 	hasAugmentingPath(): boolean {
 		// NEED TO IMPLEMENT
+		return false
 	}
 
 	getAugmentingPath(): AugmentingPath {
 		// NEED TO IMPLEMENT
+		return {path: [], value: 0}
 	}
 
 	updateResidualGraph(flow: Flow) {
