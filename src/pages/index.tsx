@@ -34,6 +34,10 @@ const Home: NextPage = () => {
 		setUploadedImage(null)
 		setNetworkFlow(null)
 		setSelectedColors([])
+
+		resetCanvas('uploaded')
+		resetCanvas('foreground')
+		resetCanvas('background')
 	}
 
 	function processUploadedImage(uploadedImage: File | null) {
@@ -91,6 +95,19 @@ const Home: NextPage = () => {
 		canvas.height = image.height
 
 		ctx.putImageData(image, 0, 0)
+	}
+
+	function resetCanvas(canvasId: string) {
+		const canvas = document.querySelector(`#${canvasId}`) as HTMLCanvasElement
+		if (!canvas) return
+
+		const ctx = canvas.getContext('2d')
+		if (!ctx) return
+
+		ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+		canvas.width = 0
+		canvas.height = 0
 	}
 
 	async function handleRun() {
@@ -167,6 +184,7 @@ const Home: NextPage = () => {
 			<main>
 				{isLoading && <LoadingSpinner />}
 				{!uploadedImage && <Dropzone onFileUploaded={handleUploadImage} />}
+
 				<canvas id="uploaded"></canvas>
 				<canvas id="foreground"></canvas>
 				<canvas id="background"></canvas>
