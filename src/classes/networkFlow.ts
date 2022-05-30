@@ -270,6 +270,12 @@ export class NetworkFlow {
 	}
 
 	updateResidualGraph(flow: Flow) {
-		// NEED TO IMPLEMENT
+		this.edges.forEach(edge => {
+			const flowValue = flow.get(edge)
+			if (!flowValue) return
+
+			edge.forwardResidualValue = edge.capacity - flowValue
+			edge.backwardResidualValue = flowValue
+		})
 	}
 }
