@@ -1,4 +1,5 @@
 import {AppProps} from 'next/app'
+import Head from 'next/head'
 import {ThemeProvider} from 'styled-components'
 import {Menu} from '../components/Menu'
 
@@ -9,6 +10,9 @@ const MyApp: React.FC<AppProps> = ({Component, pageProps}) => {
 	return (
 		<ThemeProvider theme={theme}>
 			<>
+				<Head>
+					<title>Image segmentation</title>
+				</Head>
 				<Menu />
 				<Component {...pageProps} />
 			</>
