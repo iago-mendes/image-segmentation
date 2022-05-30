@@ -136,7 +136,7 @@ const Home: NextPage = () => {
 	}
 
 	return (
-		<Container>
+		<Container className="page">
 			<header>
 				<div className="actions">
 					<button onClick={handleReset}>

@@ -23,5 +23,18 @@ export default createGlobalStyle`
 	a {
 		color: inherit;
 		text-decoration: none;
+		font-weight: bold;
+
+		:hover {
+			text-decoration: underline;
+		}
+	}
+
+	.page {
+		width: 100%;
+		max-width: 900px;
+
+		padding: 2rem;
+		margin: 0 auto;
 	}
 `
