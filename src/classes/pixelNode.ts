@@ -15,7 +15,8 @@ export class PixelNode {
 	foregroundLikehood = 0
 	backgroundLikehood = 0
 
-	edges: Edge[] = []
+	forwardEdges: Edge[] = []
+	backwardEdges: Edge[] = []
 
 	constructor(
 		red: number,

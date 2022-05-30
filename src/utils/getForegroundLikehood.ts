@@ -1,4 +1,4 @@
-import {PixelNode} from './classes/pixelNode'
+import {PixelNode} from '../classes/pixelNode'
 import {getBackgroundLikehood} from './getBackgroundLikehood'
 
 export function getForegroundLikehood(

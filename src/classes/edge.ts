@@ -4,15 +4,21 @@ export class Edge {
 	originNode: PixelNode
 	destinationNode: PixelNode
 
-	weight: number
+	capacity: number
+
+	forwardResidualValue: number
+	backwardResidualValue: number
 
 	constructor(
 		originNode: PixelNode,
 		destinationNode: PixelNode,
-		weight: number
+		capacity: number
 	) {
 		this.originNode = originNode
 		this.destinationNode = destinationNode
-		this.weight = weight
+		this.capacity = capacity
+
+		this.forwardResidualValue = capacity
+		this.backwardResidualValue = 0
 	}
 }

@@ -1,4 +1,4 @@
-import {PixelNode} from './classes/pixelNode'
+import {PixelNode} from '../classes/pixelNode'
 
 export function getSeparationPenalty(
 	pixelNodeA: PixelNode,

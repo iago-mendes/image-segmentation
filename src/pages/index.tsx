@@ -6,7 +6,7 @@ import {FiPlus, FiX, FiPlay} from 'react-icons/fi'
 import {Dropzone} from '../components/Dropzone'
 import {LoadingSpinner} from '../components/LoadingSpinner'
 import {Container} from '../styles/pages/index'
-import {NetworkFlow} from '../utils/classes/networkFlow'
+import {NetworkFlow} from '../classes/networkFlow'
 
 const Home: NextPage = () => {
 	const [uploadedImage, setUploadedImage] = useState<File | null>(null)
@@ -64,7 +64,8 @@ const Home: NextPage = () => {
 
 			ctx.drawImage(img, 0, 0)
 			const imageData = ctx.getImageData(0, 0, img.width, img.height)
-			const networkFlow = new NetworkFlow(imageData)
+			const networkFlow = new NetworkFlow()
+			networkFlow.computeNodes(imageData)
 			setNetworkFlow(networkFlow)
 
 			setIsLoading(false)
