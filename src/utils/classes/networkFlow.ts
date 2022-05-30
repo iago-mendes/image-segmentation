@@ -22,7 +22,7 @@ export class NetworkFlow {
 			const rowNodes: PixelNode[] = []
 
 			for (let column = 0; column < this.width; column++) {
-				const pixelBaseIndex = row * this.height + column
+				const pixelBaseIndex = (row * this.width + column) * 4
 
 				const redValue = image.data[pixelBaseIndex + 0]
 				const greenValue = image.data[pixelBaseIndex + 1]
@@ -43,6 +43,8 @@ export class NetworkFlow {
 
 			this.nodes.push(rowNodes)
 		}
+
+		console.log('<< nodes >>', this.nodes)
 	}
 
 	computeEdges(backgroundColors: string[]) {
@@ -111,7 +113,45 @@ export class NetworkFlow {
 				)
 			}
 		}
+	}
 
-		console.log('<< nodes >>', this.nodes)
+	separateForegroundAndBackground(backgroundColors: string[]) {
+		this.computeEdges(backgroundColors)
+
+		const foregroundNodes: PixelNode[] = []
+		const backgroundNodes: PixelNode[] = []
+
+		for (let row = 0; row < this.height; row++) {
+			for (let column = 0; column < this.width; column++) {
+				const pixelNode = this.nodes[row][column]
+
+				const isBackgroundNode = pixelNode.backgroundLikehood > 0.75
+
+				if (isBackgroundNode) backgroundNodes.push(pixelNode)
+				else foregroundNodes.push(pixelNode)
+			}
+		}
+
+		return {foregroundNodes, backgroundNodes}
+	}
+
+	getImage(exclusionList: PixelNode[] = []) {
+		const image = new ImageData(this.width, this.height)
+
+		for (let row = 0; row < this.height; row++) {
+			for (let column = 0; column < this.width; column++) {
+				const pixelNode = this.nodes[row][column]
+				const isIncluded = !exclusionList.includes(pixelNode)
+
+				const pixelBaseIndex = (row * this.width + column) * 4
+
+				image.data[pixelBaseIndex] = pixelNode.rgba.red
+				image.data[pixelBaseIndex + 1] = pixelNode.rgba.green
+				image.data[pixelBaseIndex + 2] = pixelNode.rgba.blue
+				image.data[pixelBaseIndex + 3] = isIncluded ? pixelNode.rgba.alpha : 0
+			}
+		}
+
+		return image
 	}
 }

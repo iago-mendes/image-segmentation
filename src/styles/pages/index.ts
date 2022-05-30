@@ -106,7 +106,7 @@ export const Container = styled.div`
 
 		margin: 0 auto;
 
-		> canvas#uploaded {
+		> canvas {
 			width: 300px;
 			/* background-color: red; */
 		}

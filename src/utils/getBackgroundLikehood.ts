@@ -1,4 +1,5 @@
 import {PixelNode} from './classes/pixelNode'
+import {getRgbaValues} from './getRgbaValues'
 
 export function getBackgroundLikehood(
 	pixelNode: PixelNode,
@@ -7,9 +8,7 @@ export function getBackgroundLikehood(
 	let maxBackgroundLikehood = 0
 
 	backgroundColors.forEach(color => {
-		const redValue = Number('0x' + color.substring(0, 2))
-		const greenValue = Number('0x' + color.substring(2, 4))
-		const blueValue = Number('0x' + color.substring(4, 6))
+		const {redValue, greenValue, blueValue} = getRgbaValues(color)
 
 		const redDifference = Math.abs(pixelNode.rgba.red - redValue)
 		const greenDifference = Math.abs(pixelNode.rgba.green - greenValue)
@@ -17,7 +16,7 @@ export function getBackgroundLikehood(
 		const averageDifference =
 			(redDifference + greenDifference + blueDifference) / 3
 
-		const backgroundLikehood = (255 - averageDifference) / 255
+		const backgroundLikehood = Math.abs(255 - averageDifference) / 255
 		if (backgroundLikehood > maxBackgroundLikehood)
 			maxBackgroundLikehood = backgroundLikehood
 	})

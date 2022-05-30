@@ -80,13 +80,41 @@ const Home: NextPage = () => {
 		)
 	}
 
-	function handleRun() {
+	function renderImageToCanvas(image: ImageData, canvasId: string) {
+		const canvas = document.querySelector(`#${canvasId}`) as HTMLCanvasElement
+		if (!canvas) return
+
+		const ctx = canvas.getContext('2d')
+		if (!ctx) return
+
+		canvas.width = image.width
+		canvas.height = image.height
+
+		ctx.putImageData(image, 0, 0)
+	}
+
+	async function handleRun() {
 		if (selectedColors.length < 1)
 			return alert('Select at least one background color.')
 
 		if (!networkFlow) return
 
-		networkFlow.computeEdges(selectedColors)
+		setIsLoading(true)
+
+		await new Promise(resolve => {
+			const {foregroundNodes, backgroundNodes} =
+				networkFlow.separateForegroundAndBackground(selectedColors)
+
+			const foregroundImage = networkFlow.getImage(backgroundNodes)
+			renderImageToCanvas(foregroundImage, 'foreground')
+
+			const backgroundImage = networkFlow.getImage(foregroundNodes)
+			renderImageToCanvas(backgroundImage, 'background')
+
+			resolve(null)
+		})
+
+		setIsLoading(false)
 	}
 
 	return (
@@ -140,6 +168,8 @@ const Home: NextPage = () => {
 				{isLoading && <LoadingSpinner />}
 				{!uploadedImage && <Dropzone onFileUploaded={handleUploadImage} />}
 				<canvas id="uploaded"></canvas>
+				<canvas id="foreground"></canvas>
+				<canvas id="background"></canvas>
 			</main>
 		</Container>
 	)
