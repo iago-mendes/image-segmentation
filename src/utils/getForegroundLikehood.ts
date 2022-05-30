@@ -6,7 +6,7 @@ export function getForegroundLikehood(
 	backgroundColors: string[]
 ) {
 	const backgroundLikehood = getBackgroundLikehood(pixelNode, backgroundColors)
-	const foregroundLikehood = 1 - backgroundLikehood
+	const foregroundLikehood = 255 - backgroundLikehood
 
 	return foregroundLikehood
 }

@@ -5,6 +5,7 @@ import {getBackgroundLikehood} from '../utils/getBackgroundLikehood'
 import {getForegroundLikehood} from '../utils/getForegroundLikehood'
 import {AugmentingEdge, AugmentingPath} from '../types/augmentingPath'
 import {Flow} from '../types/flow'
+import {getMinimumCut} from '../algorithms/minimumCut'
 
 export class NetworkFlow {
 	nodes: PixelNode[][] = []
@@ -50,8 +51,6 @@ export class NetworkFlow {
 
 			this.nodes.push(rowNodes)
 		}
-
-		console.log('<< nodes >>', this.nodes)
 	}
 
 	computeEdges(backgroundColors: string[]) {
@@ -79,10 +78,10 @@ export class NetworkFlow {
 			}
 		}
 
-		this.sourceNode.foregroundLikehood = 1
+		this.sourceNode.foregroundLikehood = 255
 		this.sourceNode.backgroundLikehood = 0
 		this.sinkNode.foregroundLikehood = 0
-		this.sinkNode.backgroundLikehood = 1
+		this.sinkNode.backgroundLikehood = 255
 
 		// set up edges
 		for (let row = 0; row < this.height; row++) {
@@ -162,11 +161,14 @@ export class NetworkFlow {
 		const foregroundNodes: PixelNode[] = []
 		const backgroundNodes: PixelNode[] = []
 
+		const minimumCut = getMinimumCut(this)
+
 		for (let row = 0; row < this.height; row++) {
 			for (let column = 0; column < this.width; column++) {
 				const pixelNode = this.nodes[row][column]
 
-				const isBackgroundNode = pixelNode.backgroundLikehood > 0.75
+				// const isBackgroundNode = pixelNode.backgroundLikehood > 200
+				const isBackgroundNode = !minimumCut.has(pixelNode)
 
 				if (isBackgroundNode) backgroundNodes.push(pixelNode)
 				else foregroundNodes.push(pixelNode)
@@ -203,62 +205,71 @@ export class NetworkFlow {
 		})
 	}
 
-	// backtracking
-	getAugmentingPathFromNodeToSink(
-		currentNode: PixelNode,
-		currentEdge: AugmentingEdge,
-		oldAugmentingPath: AugmentingPath
-	): AugmentingPath | null {
-		const currentValue = currentEdge.isForward
-			? currentEdge.edge.forwardResidualValue
-			: currentEdge.edge.backwardResidualValue
-
-		const isPathFeasible =
-			currentValue > 0 && !oldAugmentingPath.path.includes(currentEdge)
-		if (!isPathFeasible) return null
-
-		const currentAugmentingPath: AugmentingPath = {
-			path: [...oldAugmentingPath.path, currentEdge],
-			value: Math.min(oldAugmentingPath.value, currentValue)
-		}
-
-		const isPathComplete = currentNode == this.sinkNode
-		if (isPathComplete) return currentAugmentingPath
-
-		// forward edges
-		for (const newEdge of currentNode.forwardEdges) {
-			const newNode = newEdge.destinationNode
-
-			const newAugmentingPath = this.getAugmentingPathFromNodeToSink(
-				newNode,
-				{edge: newEdge, isForward: true},
-				currentAugmentingPath
-			)
-			if (newAugmentingPath != null) return newAugmentingPath
-		}
-
-		// backward edges
-		for (const newEdge of currentNode.backwardEdges) {
-			const newNode = newEdge.originNode
-
-			const newAugmentingPath = this.getAugmentingPathFromNodeToSink(
-				newNode,
-				{edge: newEdge, isForward: false},
-				currentAugmentingPath
-			)
-			if (newAugmentingPath != null) return newAugmentingPath
-		}
-
-		return null
-	}
-
 	getAugmentingPath(): AugmentingPath | null {
+		const sourceNode = this.sourceNode
+		const sinkNode = this.sinkNode
+
+		const exploredNodes = new Set<PixelNode>([sourceNode])
+
+		// backtracking
+		function getAugmentingPathFromNodeToSink(
+			currentNode: PixelNode,
+			currentEdge: AugmentingEdge,
+			oldAugmentingPath: AugmentingPath
+		): AugmentingPath | null {
+			const currentValue = currentEdge.isForward
+				? currentEdge.edge.forwardResidualValue
+				: currentEdge.edge.backwardResidualValue
+
+			const isPathFeasible =
+				currentValue > 0 && !oldAugmentingPath.path.includes(currentEdge)
+			if (!isPathFeasible) return null
+
+			const currentAugmentingPath: AugmentingPath = {
+				path: [...oldAugmentingPath.path, currentEdge],
+				value: Math.min(oldAugmentingPath.value, currentValue)
+			}
+
+			const isPathComplete = currentNode == sinkNode
+			if (isPathComplete) return currentAugmentingPath
+
+			// forward edges
+			for (const newEdge of currentNode.forwardEdges) {
+				const newNode = newEdge.destinationNode
+				if (exploredNodes.has(newNode)) continue
+				else exploredNodes.add(newNode)
+
+				const newAugmentingPath = getAugmentingPathFromNodeToSink(
+					newNode,
+					{edge: newEdge, isForward: true},
+					currentAugmentingPath
+				)
+				if (newAugmentingPath != null) return newAugmentingPath
+			}
+
+			// backward edges
+			for (const newEdge of currentNode.backwardEdges) {
+				const newNode = newEdge.originNode
+				if (exploredNodes.has(newNode)) continue
+				else exploredNodes.add(newNode)
+
+				const newAugmentingPath = getAugmentingPathFromNodeToSink(
+					newNode,
+					{edge: newEdge, isForward: false},
+					currentAugmentingPath
+				)
+				if (newAugmentingPath != null) return newAugmentingPath
+			}
+
+			return null
+		}
+
 		const initialAugmentingPath: AugmentingPath = {path: [], value: Infinity}
 
 		for (const newEdge of this.sourceNode.forwardEdges) {
 			const newNode = newEdge.destinationNode
 
-			const newAugmentingPath = this.getAugmentingPathFromNodeToSink(
+			const newAugmentingPath = getAugmentingPathFromNodeToSink(
 				newNode,
 				{edge: newEdge, isForward: true},
 				initialAugmentingPath
@@ -272,7 +283,7 @@ export class NetworkFlow {
 	updateResidualGraph(flow: Flow) {
 		this.edges.forEach(edge => {
 			const flowValue = flow.get(edge)
-			if (!flowValue) return
+			if (flowValue == undefined) return
 
 			edge.forwardResidualValue = edge.capacity - flowValue
 			edge.backwardResidualValue = flowValue

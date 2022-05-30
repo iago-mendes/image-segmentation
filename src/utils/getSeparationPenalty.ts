@@ -11,7 +11,7 @@ export function getSeparationPenalty(
 		pixelNodeA.backgroundLikehood - pixelNodeB.foregroundLikehood
 	)
 
-	const penaltyAverage = (penalty1 + penalty2) / 2
+	const penaltyAverage = Math.round((penalty1 + penalty2) / 2)
 
 	return penaltyAverage
 }

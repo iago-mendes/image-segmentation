@@ -13,10 +13,12 @@ export function getBackgroundLikehood(
 		const redDifference = Math.abs(pixelNode.rgba.red - redValue)
 		const greenDifference = Math.abs(pixelNode.rgba.green - greenValue)
 		const blueDifference = Math.abs(pixelNode.rgba.blue - blueValue)
-		const averageDifference =
+		const averageDifference = Math.round(
 			(redDifference + greenDifference + blueDifference) / 3
+			// (redDifference * greenDifference * blueDifference) ** (1 / 3)
+		)
 
-		const backgroundLikehood = Math.abs(255 - averageDifference) / 255
+		const backgroundLikehood = Math.abs(255 - averageDifference)
 		if (backgroundLikehood > maxBackgroundLikehood)
 			maxBackgroundLikehood = backgroundLikehood
 	})
