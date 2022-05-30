@@ -36,5 +36,13 @@ export default createGlobalStyle`
 
 		padding: 2rem;
 		margin: 0 auto;
+
+		> section {
+			margin-bottom: 2.5rem;
+
+			display: flex;
+			flex-direction: column;
+			gap: 0.75rem;
+		}
 	}
 `
