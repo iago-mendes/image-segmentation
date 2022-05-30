@@ -1,6 +1,6 @@
 import {Edge} from '../classes/edge'
 
-type AugmentingEdge = {
+export type AugmentingEdge = {
 	edge: Edge
 	isForward: boolean
 }

@@ -9,12 +9,14 @@ export function getMinimumCut(networkFlow: NetworkFlow) {
 
 	networkFlow.resetResidualGraph()
 
-	while (networkFlow.hasAugmentingPath()) {
-		const augmentingPath = networkFlow.getAugmentingPath()
+	let augmentingPath = networkFlow.getAugmentingPath()
 
+	while (augmentingPath != null) {
 		// augmentPath
 
 		networkFlow.updateResidualGraph(maximumFlow)
+
+		augmentingPath = networkFlow.getAugmentingPath()
 	}
 
 	// get minimum cut

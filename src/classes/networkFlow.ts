@@ -3,7 +3,7 @@ import {PixelNode} from './pixelNode'
 import {getSeparationPenalty} from '../utils/getSeparationPenalty'
 import {getBackgroundLikehood} from '../utils/getBackgroundLikehood'
 import {getForegroundLikehood} from '../utils/getForegroundLikehood'
-import {AugmentingPath} from '../types/augmentingPath'
+import {AugmentingEdge, AugmentingPath} from '../types/augmentingPath'
 import {Flow} from '../types/flow'
 
 export class NetworkFlow {
@@ -203,14 +203,70 @@ export class NetworkFlow {
 		})
 	}
 
-	hasAugmentingPath(): boolean {
-		// NEED TO IMPLEMENT
-		return false
+	// backtracking
+	getAugmentingPathFromNodeToSink(
+		currentNode: PixelNode,
+		currentEdge: AugmentingEdge,
+		oldAugmentingPath: AugmentingPath
+	): AugmentingPath | null {
+		const currentValue = currentEdge.isForward
+			? currentEdge.edge.forwardResidualValue
+			: currentEdge.edge.backwardResidualValue
+
+		const isPathFeasible =
+			currentValue > 0 && !oldAugmentingPath.path.includes(currentEdge)
+		if (!isPathFeasible) return null
+
+		const currentAugmentingPath: AugmentingPath = {
+			path: [...oldAugmentingPath.path, currentEdge],
+			value: Math.min(oldAugmentingPath.value, currentValue)
+		}
+
+		const isPathComplete = currentNode == this.sinkNode
+		if (isPathComplete) return currentAugmentingPath
+
+		// forward edges
+		for (const newEdge of currentNode.forwardEdges) {
+			const newNode = newEdge.destinationNode
+
+			const newAugmentingPath = this.getAugmentingPathFromNodeToSink(
+				newNode,
+				{edge: newEdge, isForward: true},
+				currentAugmentingPath
+			)
+			if (newAugmentingPath != null) return newAugmentingPath
+		}
+
+		// backward edges
+		for (const newEdge of currentNode.backwardEdges) {
+			const newNode = newEdge.originNode
+
+			const newAugmentingPath = this.getAugmentingPathFromNodeToSink(
+				newNode,
+				{edge: newEdge, isForward: false},
+				currentAugmentingPath
+			)
+			if (newAugmentingPath != null) return newAugmentingPath
+		}
+
+		return null
 	}
 
-	getAugmentingPath(): AugmentingPath {
-		// NEED TO IMPLEMENT
-		return {path: [], value: 0}
+	getAugmentingPath(): AugmentingPath | null {
+		const initialAugmentingPath: AugmentingPath = {path: [], value: Infinity}
+
+		for (const newEdge of this.sourceNode.forwardEdges) {
+			const newNode = newEdge.destinationNode
+
+			const newAugmentingPath = this.getAugmentingPathFromNodeToSink(
+				newNode,
+				{edge: newEdge, isForward: true},
+				initialAugmentingPath
+			)
+			if (newAugmentingPath != null) return newAugmentingPath
+		}
+
+		return null
 	}
 
 	updateResidualGraph(flow: Flow) {
