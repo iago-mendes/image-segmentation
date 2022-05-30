@@ -12,7 +12,16 @@ export function getMinimumCut(networkFlow: NetworkFlow) {
 	let augmentingPath = networkFlow.getAugmentingPath()
 
 	while (augmentingPath != null) {
-		// augmentPath
+		const augmentingValue = augmentingPath.value
+		augmentingPath.path.forEach(({edge, isForward}) => {
+			const currentFlowValue = maximumFlow.get(edge)
+			if (!currentFlowValue) return
+
+			const flowChange = isForward ? augmentingValue : -1 * augmentingValue
+			const newFlowValue = currentFlowValue + flowChange
+
+			maximumFlow.set(edge, newFlowValue)
+		})
 
 		networkFlow.updateResidualGraph(maximumFlow)
 
