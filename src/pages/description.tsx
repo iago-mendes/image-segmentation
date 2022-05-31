@@ -127,6 +127,76 @@ const Description: NextPage = () => {
 
 			<section>
 				<h1>Results</h1>
+
+				<p>
+					The code for this project is available on{' '}
+					<a
+						href="https://github.com/iago-mendes/image-segmentation"
+						target="_blank"
+						rel="nonreferrer noreferrer"
+					>
+						GitHub
+					</a>
+					.
+				</p>
+
+				<p>
+					There are a lot of improvement opportunities remaining in this
+					project. The most crucial ones involve actually making it work in
+					different scenarios, focusing in more complex images. In the tests,
+					simplistic images (less than 10x10 pixels) were used to make the
+					analysis and debugging easier. Even then, the results are not as we
+					would expect for some scenarios.
+				</p>
+				<p>Consider the following simplistic image for testing purposes:</p>
+				<img src="/images/tests/original.png" alt="" style={{width: '10rem'}} />
+				<p>
+					When running the algorithm on the above image selecting the color red
+					for the background, we get the following foreground and background
+					images, respectively:
+				</p>
+				<div>
+					<img
+						src="/images/tests/red-foreground.png"
+						alt=""
+						style={{width: '10rem', marginRight: '1rem'}}
+					/>
+
+					<img
+						src="/images/tests/red-background.png"
+						alt=""
+						style={{width: '10rem'}}
+					/>
+				</div>
+
+				<p>
+					Be as it may, we get unexpected results when using any of the other 3
+					colors present in the test image. In those cases, the entire image is
+					set to either foreground or background. The same goes for larger and
+					more complex images.
+				</p>
+
+				<p>
+					Another problem is the limit size of the original image. For any
+					images with a reasonable size (greater than 100x100 pixels), the whole
+					website crashes due to a{' '}
+					<a
+						href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Too_much_recursion"
+						target="_blank"
+						rel="nonreferrer noreferrer"
+					>
+						"too much recursion" error
+					</a>
+					. This is likely related to the computation of augmenting paths, which
+					makes use of backtracking.
+				</p>
+
+				<p>
+					With more time, I would focus on solving the problems mentioned above,
+					among other improvements. That said, this project was a good
+					opportunity for me to apply concepts learned from class in a real-life
+					application.
+				</p>
 			</section>
 		</div>
 	)
