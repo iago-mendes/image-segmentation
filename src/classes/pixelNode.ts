@@ -9,8 +9,7 @@ type Rgba = {
 
 export class PixelNode {
 	rgba: Rgba
-	xPosition: number
-	yPosition: number
+	id: string // for debugging purposes
 
 	foregroundLikehood = 0
 	backgroundLikehood = 0
@@ -23,8 +22,7 @@ export class PixelNode {
 		green: number,
 		blue: number,
 		alpha: number,
-		x: number,
-		y: number
+		id: string
 	) {
 		this.rgba = {
 			red,
@@ -32,7 +30,6 @@ export class PixelNode {
 			blue,
 			alpha
 		}
-		this.xPosition = x
-		this.yPosition = y
+		this.id = id
 	}
 }
