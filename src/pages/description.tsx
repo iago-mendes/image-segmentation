@@ -16,26 +16,26 @@ const Description: NextPage = () => {
 						slides by Carl Kingsford
 					</a>
 					. Basically, we represent an image as a network flow and find a
-					minimum cut, which we use to determine the foreground and background
-					pixels.
+					minimum cut, which we then use to determine the foreground and
+					background pixels.
 				</p>
 
 				<p>
 					For the construction of the network flow, we create a node for every
 					pixel and add 2 extra nodes for the source and the sink. Besides, we
 					connect every pixel node to its neighbors with directed edges. We also
-					add edges from the source to every pixel node and from the every pixel
+					add edges from the source to every pixel node and from every pixel
 					node to the sink. Additionally, we define a penalty for separating
 					every pair of pixel nodes and use it for the capacity of the edges
 					connecting them. Finally, we define foreground and background
-					likehoods for every pixel node and use it for the capacities
+					likelihoods for every pixel node and use it for the capacities
 					connecting them to the source and sink nodes, respectively.
 				</p>
 
 				<p>
 					The goal is to use the source (s) to represent the foreground of the
 					image and the sink (t) to represent the background. Hence, once the
-					network flow is construted, we can find a minimum s-t cut (S, T). The
+					network flow is constructed, we can find a minimum s-t cut (S, T). The
 					nodes in S should be set to the foreground of the image, and the nodes
 					in T should be set to the background. With that, the image has been
 					segmented.
@@ -49,7 +49,7 @@ const Description: NextPage = () => {
 					Individual classes were created to represent nodes, edges and network
 					flows for this problem. The <code>PixelNode</code> class represents
 					the nodes and holds information about its color value, foreground and
-					background likehoods, and forward (out of node) and backward (into
+					background likelihoods, and forward (out of node) and backward (into
 					node) edges. Besides, the <code>Edge</code> class represents the edges
 					and holds information about its origin and destination nodes, its
 					capacity, and its forward and backward residual values. Finally, the{' '}
@@ -74,7 +74,7 @@ const Description: NextPage = () => {
 				</p>
 
 				<p>
-					The most complex computations happen when finding the minimum code. To
+					The most complex computations happen when finding the minimum cut. To
 					do so, we use the Ford-Fulkerson algorithm, which can be represented
 					in pseudocode as follows:
 					<br />
@@ -110,18 +110,19 @@ const Description: NextPage = () => {
 
 				<p>
 					Finally, it was necessary to define the penalty for the pairs of pixel
-					nodes as well as the foreground and background likehoods. First of
-					all, it was important to keep all of those values as integers so that
-					the computed maximum flow was also integral. That said, the background
-					likehood is computed by comparing the color values of each pixel node
-					with the background colors (selected by the user), which results in a
-					value between 0 and 255. The foreground likehood (<code>a</code>) is
-					defined to be the complement of the background one ( <code>b</code> );
-					that is, <code>a = 255 - b</code>. Lastly, the separation penalty for
-					two neighboring pixel nodes is computed by checking their foreground
-					and background likehoods; that is, two background nodes and two
-					foreground nodes should be together (high penalty), but a background
-					node and a foreground node should be separate (low penalty).
+					nodes, as well as the foreground and background likelihoods. Foremost,
+					it was important to keep all of those values as integers so that the
+					computed maximum flow was also integral. That said, the background
+					likelihood is computed by comparing the color values of each pixel
+					node with the background colors (selected by the user), which results
+					in a value between 0 and 255. The foreground likelihood (
+					<code>a</code>) is defined to be the complement of the background one
+					( <code>b</code> ); that is, <code>a = 255 - b</code>. Lastly, the
+					separation penalty for two neighboring pixel nodes is computed by
+					checking their foreground and background likelihoods; that is, two
+					background nodes and two foreground nodes should be together (high
+					penalty), but a background node and a foreground node should be
+					separate (low penalty).
 				</p>
 			</section>
 
@@ -142,17 +143,17 @@ const Description: NextPage = () => {
 
 				<p>
 					There are a lot of improvement opportunities remaining in this
-					project. The most crucial ones involve actually making it work in
-					different scenarios, focusing in more complex images. In the tests,
+					project. The most crucial ones involve making it actually work in
+					different scenarios, focusing on more complex images. In the tests,
 					simplistic images (less than 10x10 pixels) were used to make the
-					analysis and debugging easier. Even then, the results are not as we
-					would expect for some scenarios.
+					analysis and debugging easier. Even then, the results are not always
+					what we would expect.
 				</p>
 				<p>Consider the following simplistic image for testing purposes:</p>
 				<img src="/images/tests/original.png" alt="" style={{width: '10rem'}} />
 				<p>
-					When running the algorithm on the above image selecting the color red
-					for the background, we get the following foreground and background
+					When running the algorithm on the above image (selecting the color red
+					for the background) we get the following foreground and background
 					images, respectively:
 				</p>
 				<div>
@@ -170,10 +171,16 @@ const Description: NextPage = () => {
 				</div>
 
 				<p>
-					Be as it may, we get unexpected results when using any of the other 3
-					colors present in the test image. In those cases, the entire image is
-					set to either foreground or background. The same goes for larger and
-					more complex images.
+					This is expected because we have basically separated warm and cold
+					colors. Be as it may, we get unexpected results when using any of the
+					other 3 colors present in the test image. In those cases, the entire
+					image is set to either foreground or background. The same goes for
+					larger and more complex images. This is probably associated with the
+					definition for foreground and background likelihoods for every pixel
+					node and the computation of the separation penalty for all pairs of
+					pixel nodes. For that, I used what intuitively made sense, but further
+					research should be done to find the most appropriate way to compute
+					those quantities.
 				</p>
 
 				<p>
