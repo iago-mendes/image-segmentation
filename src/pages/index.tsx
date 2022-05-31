@@ -16,7 +16,7 @@ const Home: NextPage = () => {
 	const [selectedColors, setSelectedColors] = useState<string[]>([])
 	const [tmpSelectedColor, setTmpSelectedColor] = useState('#ffffff')
 
-	const isReady = networkFlow != null && !isLoading
+	const isReady = networkFlow != null
 
 	useEffect(() => {
 		processUploadedImage(uploadedImage)
@@ -119,7 +119,7 @@ const Home: NextPage = () => {
 
 		setIsLoading(true)
 
-		await new Promise(resolve => {
+		new Promise(resolve => {
 			const {foregroundNodes, backgroundNodes} =
 				networkFlow.separateForegroundAndBackground(selectedColors)
 
@@ -129,10 +129,9 @@ const Home: NextPage = () => {
 			const backgroundImage = networkFlow.getImage(backgroundNodes)
 			renderImageToCanvas(backgroundImage, 'background')
 
+			setIsLoading(false)
 			resolve(null)
 		})
-
-		setIsLoading(false)
 	}
 
 	return (
@@ -186,9 +185,34 @@ const Home: NextPage = () => {
 				{isLoading && <LoadingSpinner />}
 				{!uploadedImage && <Dropzone onFileUploaded={handleUploadImage} />}
 
-				<canvas id="uploaded"></canvas>
-				<canvas id="foreground"></canvas>
-				<canvas id="background"></canvas>
+				<div className="group">
+					<aside>
+						{isReady && <h2>Original</h2>}
+						<canvas id="uploaded"></canvas>
+					</aside>
+					<aside>
+						{isReady && (
+							<div className="info">
+								<h3>Instructions:</h3>
+								<ol>
+									<li>select a background color;</li>
+									<li>add color; and</li>
+									<li>run.</li>
+								</ol>
+							</div>
+						)}
+					</aside>
+				</div>
+				<div className="group">
+					<aside>
+						{isReady && <h2>Foreground</h2>}
+						<canvas id="foreground"></canvas>
+					</aside>
+					<aside>
+						{isReady && <h2>Background</h2>}
+						<canvas id="background"></canvas>
+					</aside>
+				</div>
 			</main>
 		</Container>
 	)

@@ -101,8 +101,45 @@ export const Container = styled.div`
 	> main {
 		width: 100%;
 
-		> canvas {
-			width: 300px;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+
+		> .group {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			gap: 1rem;
+
+			> aside {
+				display: flex;
+				flex-direction: column;
+
+				> h2 {
+					margin-bottom: 0.5rem;
+				}
+
+				> canvas {
+					width: 15rem;
+					margin: 0 auto;
+				}
+
+				> .info {
+					margin: auto 0;
+
+					> ol {
+						margin-left: 1.5rem;
+					}
+				}
+			}
+		}
+	}
+
+	@media (min-width: 800px) {
+		> main {
+			> .group {
+				flex-direction: row;
+			}
 		}
 	}
 `
