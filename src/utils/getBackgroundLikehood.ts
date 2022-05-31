@@ -15,7 +15,6 @@ export function getBackgroundLikehood(
 		const blueDifference = Math.abs(pixelNode.rgba.blue - blueValue)
 		const averageDifference = Math.round(
 			(redDifference + greenDifference + blueDifference) / 3
-			// (redDifference * greenDifference * blueDifference) ** (1 / 3)
 		)
 
 		const backgroundLikehood = Math.abs(255 - averageDifference)

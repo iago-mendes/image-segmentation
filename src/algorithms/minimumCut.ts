@@ -12,9 +12,7 @@ export function getMinimumCut(networkFlow: NetworkFlow) {
 
 	let augmentingPath = networkFlow.getAugmentingPath()
 
-	let i = 0
 	while (augmentingPath != null) {
-		if (++i > 1000) break
 		const augmentingValue = augmentingPath.value
 		augmentingPath.path.forEach(({edge, isForward}) => {
 			const currentFlowValue = maximumFlow.get(edge)
