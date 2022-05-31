@@ -59,14 +59,21 @@ const Home: NextPage = () => {
 		img.src = imageUrl
 
 		img.onload = function () {
-			canvas.width = img.width
-			canvas.height = img.height
+			if (img.width > 100 || img.height > 100) {
+				alert(
+					'This algorithm only supports images smaller than 100x100 pixels.'
+				)
+				setUploadedImage(null)
+			} else {
+				canvas.width = img.width
+				canvas.height = img.height
 
-			ctx.drawImage(img, 0, 0)
-			const imageData = ctx.getImageData(0, 0, img.width, img.height)
-			const networkFlow = new NetworkFlow()
-			networkFlow.computeNodes(imageData)
-			setNetworkFlow(networkFlow)
+				ctx.drawImage(img, 0, 0)
+				const imageData = ctx.getImageData(0, 0, img.width, img.height)
+				const networkFlow = new NetworkFlow()
+				networkFlow.computeNodes(imageData)
+				setNetworkFlow(networkFlow)
+			}
 
 			setIsLoading(false)
 		}
