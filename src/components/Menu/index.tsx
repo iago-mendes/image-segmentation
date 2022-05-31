@@ -18,8 +18,8 @@ export function Menu() {
 				<Link href="/">
 					<li>Home</li>
 				</Link>
-				<Link href="/algorithm">
-					<li>Algorithm</li>
+				<Link href="/description">
+					<li>Description</li>
 				</Link>
 				<Link href="/about">
 					<li>About</li>

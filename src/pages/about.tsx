@@ -27,7 +27,7 @@ const About: NextPage = () => {
 
 				<p>
 					If you would like to understand the algorithm and its implementation,
-					you can go to the page <Link href="/algorithm">"Algorithm"</Link>.
+					you can go to the page <Link href="/description">"Description"</Link>.
 				</p>
 			</section>
 		</div>
