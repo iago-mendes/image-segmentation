@@ -11,8 +11,8 @@ export class NetworkFlow {
 	nodes: PixelNode[][] = []
 	edges: Edge[] = []
 
-	sourceNode: PixelNode = new PixelNode(0, 0, 0, 0, -1, -1)
-	sinkNode: PixelNode = new PixelNode(0, 0, 0, 0, -1, -1)
+	sourceNode: PixelNode = new PixelNode(0, 0, 0, 0, 's')
+	sinkNode: PixelNode = new PixelNode(0, 0, 0, 0, 't')
 
 	width = 0
 	height = 0
@@ -42,8 +42,7 @@ export class NetworkFlow {
 					greenValue,
 					blueValue,
 					alphaValue,
-					row,
-					column
+					`(${row},${column})`
 				)
 
 				rowNodes.push(pixelNode)
