@@ -177,20 +177,20 @@ export class NetworkFlow {
 		return {foregroundNodes, backgroundNodes}
 	}
 
-	getImage(exclusionList: Set<PixelNode> = new Set<PixelNode>()) {
+	getImage(inclusionList: Set<PixelNode> = new Set<PixelNode>()) {
 		const image = new ImageData(this.width, this.height)
 
 		for (let row = 0; row < this.height; row++) {
 			for (let column = 0; column < this.width; column++) {
 				const pixelNode = this.nodes[row][column]
-				const isExcluded = !exclusionList.has(pixelNode)
+				const isIncluded = inclusionList.has(pixelNode)
 
 				const pixelBaseIndex = (row * this.width + column) * 4
 
 				image.data[pixelBaseIndex] = pixelNode.rgba.red
 				image.data[pixelBaseIndex + 1] = pixelNode.rgba.green
 				image.data[pixelBaseIndex + 2] = pixelNode.rgba.blue
-				image.data[pixelBaseIndex + 3] = isExcluded ? 0 : pixelNode.rgba.alpha
+				image.data[pixelBaseIndex + 3] = isIncluded ? pixelNode.rgba.alpha : 0
 			}
 		}
 

@@ -123,10 +123,10 @@ const Home: NextPage = () => {
 			const {foregroundNodes, backgroundNodes} =
 				networkFlow.separateForegroundAndBackground(selectedColors)
 
-			const foregroundImage = networkFlow.getImage(backgroundNodes)
+			const foregroundImage = networkFlow.getImage(foregroundNodes)
 			renderImageToCanvas(foregroundImage, 'foreground')
 
-			const backgroundImage = networkFlow.getImage(foregroundNodes)
+			const backgroundImage = networkFlow.getImage(backgroundNodes)
 			renderImageToCanvas(backgroundImage, 'background')
 
 			resolve(null)
