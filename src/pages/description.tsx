@@ -44,6 +44,85 @@ const Description: NextPage = () => {
 
 			<section>
 				<h1>Implementation</h1>
+
+				<p>
+					Individual classes were created to represent nodes, edges and network
+					flows for this problem. The <code>PixelNode</code> class represents
+					the nodes and holds information about its color value, foreground and
+					background likehoods, and forward (out of node) and backward (into
+					node) edges. Besides, the <code>Edge</code> class represents the edges
+					and holds information about its origin and destination nodes, its
+					capacity, and its forward and backward residual values. Finally, the{' '}
+					<code>NetworkFlow</code> class represents the network flow and holds
+					information about its pixel nodes, edges, source and sink nodes, and
+					the original image based on which it was created. Note that, by having
+					the residual values within the edges, we can use the network flow to
+					represents its own residual graph, without having to create a separate
+					data structure.
+				</p>
+
+				<p>
+					Moreover, it was necessary to make use of additional data structures
+					in the implementation of this project in order to make it more
+					efficient. For instance, the flow is represented by a{' '}
+					<code>HashMap</code> (<code>Map</code>) that maps edges of type{' '}
+					<code>Edge</code> to numbers. Another example is a group of pixel
+					nodes used across the project (such as to represent a minimum cut),
+					which is represented as a <code>Set&lt;PixelNode&gt;</code>, which
+					makes checking if a node is included in such a group much faster (
+					<code>O(1)</code> instead of the linear time complexity in lists).
+				</p>
+
+				<p>
+					The most complex computations happen when finding the minimum code. To
+					do so, we use the Ford-Fulkerson algorithm, which can be represented
+					in pseudocode as follows:
+					<br />
+					<code>
+						For all edges e, set the flow f(e) = 0
+						<br />
+						Form residual graph
+						<br />
+						P = augmenting path
+						<br />
+						while P is an augmenting path
+						<br />
+						&nbsp;&nbsp; augment f using P
+						<br />
+						&nbsp;&nbsp; update residual graph
+						<br />
+						&nbsp;&nbsp; P = new augmenting path
+						<br />
+						S = minimum cut constructed from f
+						<br />
+						return S.
+					</code>
+				</p>
+
+				<p>
+					In the process described above, most of the steps had straightforward
+					implementations, except for finding augmenting paths. To find an
+					augmenting path, we use a backtracking algorithm that attempts to find
+					a valid path in the residual graph from the source to the sink. It
+					returns the first valid path that it finds or <code>null</code> if no
+					path was found.
+				</p>
+
+				<p>
+					Finally, it was necessary to define the penalty for the pairs of pixel
+					nodes as well as the foreground and background likehoods. First of
+					all, it was important to keep all of those values as integers so that
+					the computed maximum flow was also integral. That said, the background
+					likehood is computed by comparing the color values of each pixel node
+					with the background colors (selected by the user), which results in a
+					value between 0 and 255. The foreground likehood (<code>a</code>) is
+					defined to be the complement of the background one ( <code>b</code> );
+					that is, <code>a = 255 - b</code>. Lastly, the separation penalty for
+					two neighboring pixel nodes is computed by checking their foreground
+					and background likehoods; that is, two background nodes and two
+					foreground nodes should be together (high penalty), but a background
+					node and a foreground node should be separate (low penalty).
+				</p>
 			</section>
 
 			<section>
